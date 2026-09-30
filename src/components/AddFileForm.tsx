@@ -55,7 +55,7 @@ export function AddFileForm({ folderId }: { folderId: string }) {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col h-[calc(100vh-12rem)] min-h-[500px] gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col h-[calc(100vh-12rem)] min-h-125 gap-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-black/40 backdrop-blur-sm p-6 rounded-2xl border border-border/50">
         <div className="space-y-2">
           <Label htmlFor="heading">File Heading</Label>
@@ -72,7 +72,7 @@ export function AddFileForm({ folderId }: { folderId: string }) {
           <Label htmlFor="language">Language</Label>
           <Select 
             value={formData.language} 
-            onValueChange={(val) => setFormData({ ...formData, language: val })}
+            onValueChange={(val) => setFormData({ ...formData, language: val || "javascript" })}
           >
             <SelectTrigger id="language" className="bg-black/50 border-border/50 focus-visible:ring-primary/50">
               <SelectValue placeholder="Select language" />

@@ -4,9 +4,9 @@ import { codeFiles, folders } from '@/db/schema';
 import { createFileSchema } from '@/lib/validators';
 import { eq, desc } from 'drizzle-orm';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const folderId = params.id;
+    const folderId = (await params).id;
     
     const files = await db.query.codeFiles.findMany({
       where: eq(codeFiles.folderId, folderId),
@@ -20,9 +20,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const folderId = params.id;
+    const folderId = (await params).id;
     
     // Check if folder exists
     const folder = await db.query.folders.findFirst({
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const parsed = createFileSchema.safeParse(body);
     
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.errors }, { status: 400 });
+      return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
     }
 
     const { heading, language, content } = parsed.data;

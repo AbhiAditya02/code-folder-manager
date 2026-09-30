@@ -9,11 +9,11 @@ import { CodeViewer } from "@/components/CodeViewer";
 import { DeleteFileButton } from "@/components/DeleteFileButton";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function FilePage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
 
   const file = await db.query.codeFiles.findFirst({
     where: eq(codeFiles.id, id),
@@ -39,7 +39,7 @@ export default async function FilePage({ params }: PageProps) {
         
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+            <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-white to-white/60">
               {file.heading}
             </h1>
             <div className="flex items-center gap-4 mt-3">
@@ -57,7 +57,7 @@ export default async function FilePage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="flex-1 mt-2">
+      <div className="flex-1 mt-2 flex flex-col min-h-0">
         <CodeViewer content={file.content} language={file.language} />
       </div>
     </div>

@@ -6,15 +6,14 @@ import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FileCard } from "@/components/FileCard";
+import { getYearString } from "@/lib/utils";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function FolderPage({ params }: PageProps) {
-  // Fix for Next.js 15: await params if it's treated as a promise, but in Next 14 it's sync.
-  // Assuming Next 14 standard usage here.
-  const { id } = params;
+  const { id } = await params;
 
   const folder = await db.query.folders.findFirst({
     where: eq(folders.id, id),
@@ -42,16 +41,16 @@ export default async function FolderPage({ params }: PageProps) {
         
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+            <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-white to-white/60">
               {folder.name}
             </h1>
             <p className="text-muted-foreground mt-2">
-              Dept: {folder.dept} • Year: {folder.year} • Batch: {folder.batch} • Group: {folder.group_name}
+              Dept: {folder.dept} • Year: {getYearString(folder.year)} • Batch: {folder.batch} • Group: {folder.group_name}
             </p>
           </div>
           <Link href={`/folders/${id}/new`}>
             <Button className="group relative overflow-hidden rounded-full bg-primary px-6 shadow-[0_0_15px_rgba(var(--primary),0.3)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(var(--primary),0.5)]">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] transition-transform duration-700 group-hover:translate-x-[100%]" />
+              <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] transition-transform duration-700 group-hover:translate-x-[100%]" />
               <Plus className="mr-2 h-4 w-4" />
               Add File
             </Button>

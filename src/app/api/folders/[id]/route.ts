@@ -3,9 +3,9 @@ import { db } from '@/db';
 import { folders } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = params.id;
+    const id = (await params).id;
     
     const existing = await db.query.folders.findFirst({
       where: eq(folders.id, id)

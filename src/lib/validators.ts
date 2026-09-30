@@ -5,7 +5,7 @@ export const folderNameRegex = /^[A-Za-z]+_\d{4}_[A-Za-z0-9]+_[A-Za-z0-9]+$/;
 
 export const createFolderSchema = z.object({
   dept: z.string().min(1, 'Department is required').regex(/^[A-Za-z]+$/, 'Department must contain only letters'),
-  year: z.number().int().min(2000).max(2100),
+  year: z.number().int().min(1).max(4),
   batch: z.string().min(1, 'Batch is required').regex(/^[A-Za-z0-9]+$/, 'Batch must contain only alphanumeric characters'),
   groupName: z.string().min(1, 'Group is required').regex(/^[A-Za-z0-9]+$/, 'Group must contain only alphanumeric characters'),
 });

@@ -20,7 +20,7 @@ export function CodeViewer({ content, language }: CodeViewerProps) {
   };
 
   return (
-    <div className="flex flex-col flex-1 min-h-[500px] rounded-2xl border border-border/50 overflow-hidden bg-[#1e1e1e] shadow-[0_0_30px_rgba(var(--primary),0.1)]">
+    <div className="flex flex-col h-full min-h-125 rounded-2xl border border-border/50 overflow-hidden bg-[#1e1e1e] shadow-[0_0_30px_rgba(var(--primary),0.1)]">
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40">
         <div className="flex items-center gap-2">
           <Code2 className="h-4 w-4 text-primary" />

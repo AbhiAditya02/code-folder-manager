@@ -4,9 +4,9 @@ import { codeFiles } from '@/db/schema';
 import { updateFileSchema } from '@/lib/validators';
 import { eq } from 'drizzle-orm';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const fileId = params.id;
+    const fileId = (await params).id;
     
     const file = await db.query.codeFiles.findFirst({
       where: eq(codeFiles.id, fileId),
@@ -26,9 +26,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const fileId = params.id;
+    const fileId = (await params).id;
     
     const existing = await db.query.codeFiles.findFirst({
       where: eq(codeFiles.id, fileId)
@@ -42,7 +42,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const parsed = updateFileSchema.safeParse(body);
     
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.errors }, { status: 400 });
+      return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
     }
 
     const [updated] = await db.update(codeFiles)
@@ -60,9 +60,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const fileId = params.id;
+    const fileId = (await params).id;
     
     const existing = await db.query.codeFiles.findFirst({
       where: eq(codeFiles.id, fileId)

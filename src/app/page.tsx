@@ -33,7 +33,7 @@ export default async function Dashboard({
     <div className="flex flex-col gap-8 pb-10">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="space-y-1.5">
-          <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+          <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-white to-white/60">
             Your Code Vault
           </h1>
           <p className="text-muted-foreground">

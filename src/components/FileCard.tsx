@@ -13,7 +13,7 @@ export function FileCard({ id, heading, language, createdAt }: FileCardProps) {
   return (
     <Link href={`/files/${id}`}>
       <Card className="group relative overflow-hidden border-border/50 bg-black/40 backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-black/60 hover:shadow-[0_0_20px_rgba(var(--primary),0.15)]">
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="absolute inset-0 z-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         
         <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-3">
           <div className="flex items-center gap-3">

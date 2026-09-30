@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { folders } from '@/db/schema';
 import { createFolderSchema } from '@/lib/validators';
 import { eq, desc, and } from 'drizzle-orm';
+import { getYearString } from '@/lib/utils';
 
 export async function GET(req: NextRequest) {
   try {
@@ -36,11 +37,11 @@ export async function POST(req: NextRequest) {
     const parsed = createFolderSchema.safeParse(body);
     
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.errors }, { status: 400 });
+      return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
     }
 
     const { dept, year, batch, groupName } = parsed.data;
-    const folderName = `${dept}_${year}_${batch}_${groupName}`;
+    const folderName = `${dept}_${getYearString(year)}_${batch}_${groupName}`;
 
     // Check if it already exists
     const existing = await db.query.folders.findFirst({

@@ -13,9 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getYearString } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast"; // wait, do they have use-toast? Let's check
+import { toast } from "@/components/ui/toast";
 
 export function CreateFolderDialog() {
   const [open, setOpen] = useState(false);
@@ -24,7 +32,7 @@ export function CreateFolderDialog() {
 
   const [formData, setFormData] = useState({
     dept: "",
-    year: new Date().getFullYear().toString(),
+    year: "1",
     batch: "",
     groupName: "",
   });
@@ -52,10 +60,11 @@ export function CreateFolderDialog() {
       }
 
       setOpen(false);
-      setFormData({ dept: "", year: new Date().getFullYear().toString(), batch: "", groupName: "" });
+      setFormData({ dept: "", year: "1", batch: "", groupName: "" });
+      toast.add({ title: "Success", description: "Folder created successfully.", type: "success" });
       router.refresh(); // Refresh page to see new folder
     } catch (error: any) {
-      alert(error.message); // simple alert if no toast
+      toast.add({ title: "Error", description: error.message, type: "error" });
     } finally {
       setIsLoading(false);
     }
@@ -63,14 +72,16 @@ export function CreateFolderDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="group relative overflow-hidden rounded-full bg-primary px-6 shadow-[0_0_15px_rgba(var(--primary),0.3)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(var(--primary),0.5)]">
-          <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] transition-transform duration-700 group-hover:translate-x-[100%]" />
-          <Plus className="mr-2 h-4 w-4" />
-          New Folder
-        </Button>
+      <DialogTrigger
+        render={
+          <Button className="group relative overflow-hidden rounded-full bg-primary px-6 shadow-[0_0_15px_rgba(var(--primary),0.3)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(var(--primary),0.5)]" />
+        }
+      >
+        <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 translate-x-[100%] transition-transform duration-700 group-hover:translate-x-[100%]" />
+        <Plus className="mr-2 h-4 w-4" />
+        New Folder
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] border-border/50 bg-background/80 backdrop-blur-xl">
+      <DialogContent className="sm:max-w-106.25 border-border/50 bg-background/80 backdrop-blur-xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold tracking-tight">Create new folder</DialogTitle>
           <DialogDescription>
@@ -92,17 +103,20 @@ export function CreateFolderDialog() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="year">Year</Label>
-              <Input
-                id="year"
-                type="number"
-                placeholder="2024"
-                required
-                min={2000}
-                max={2100}
-                value={formData.year}
-                onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                className="bg-black/50 border-border/50 focus-visible:ring-primary/50"
-              />
+              <Select 
+                value={formData.year} 
+                onValueChange={(val) => setFormData({ ...formData, year: val || "" })}
+              >
+                <SelectTrigger id="year" className="bg-black/50 border-border/50 focus-visible:ring-primary/50">
+                  <SelectValue placeholder="Select year" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/90 border-border/50 backdrop-blur-xl">
+                  <SelectItem value="1">1st Year</SelectItem>
+                  <SelectItem value="2">2nd Year</SelectItem>
+                  <SelectItem value="3">3rd Year</SelectItem>
+                  <SelectItem value="4">4th Year</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -132,7 +146,7 @@ export function CreateFolderDialog() {
           
           <div className="rounded-lg bg-primary/10 p-3 mt-4 border border-primary/20">
             <p className="text-sm text-center font-mono text-primary">
-              Folder name: {formData.dept || 'DEPT'}_{formData.year}_{formData.batch || 'BATCH'}_{formData.groupName || 'GROUP'}
+              Folder name: {formData.dept || 'DEPT'}_{getYearString(formData.year)}_{formData.batch || 'BATCH'}_{formData.groupName || 'GROUP'}
             </p>
           </div>
 

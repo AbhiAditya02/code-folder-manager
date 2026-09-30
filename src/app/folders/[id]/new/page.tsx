@@ -3,12 +3,11 @@ import Link from "next/link";
 import { AddFileForm } from "@/components/AddFileForm";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default function NewFilePage({ params }: PageProps) {
-  // Fix for Next.js 15 treating params as Promise (assume sync for Next 14 here)
-  const { id } = params;
+export default async function NewFilePage({ params }: PageProps) {
+  const { id } = await params;
 
   return (
     <div className="flex flex-col gap-6 h-full pb-10">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Folder, Calendar, Users, GraduationCap, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { getYearString } from "@/lib/utils";
 
 interface FolderCardProps {
   id: string;
@@ -17,7 +18,7 @@ export function FolderCard({ id, name, dept, year, batch, groupName, createdAt }
     <Link href={`/folders/${id}`}>
       <Card className="group relative overflow-hidden border-border/50 bg-black/40 backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-black/60 hover:shadow-[0_0_20px_rgba(var(--primary),0.15)]">
         {/* Glow effect on hover */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="absolute inset-0 z-0 bg-linear-to-br from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         
         <CardHeader className="relative z-10 flex flex-row items-start justify-between space-y-0 pb-4">
           <div className="flex items-center gap-3">
@@ -36,7 +37,7 @@ export function FolderCard({ id, name, dept, year, batch, groupName, createdAt }
         <CardContent className="relative z-10 pb-4">
           <div className="flex flex-wrap gap-2">
             <Badge icon={<GraduationCap className="h-3 w-3" />} text={dept} />
-            <Badge icon={<Calendar className="h-3 w-3" />} text={year.toString()} />
+            <Badge icon={<Calendar className="h-3 w-3" />} text={getYearString(year)} />
             <Badge icon={<Users className="h-3 w-3" />} text={`Batch ${batch}`} />
             <Badge icon={<Folder className="h-3 w-3" />} text={`Group ${groupName}`} />
           </div>
