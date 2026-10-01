@@ -10,6 +10,14 @@ export function DeleteFileButton({ fileId, folderId }: { fileId: string; folderI
   const router = useRouter();
 
   const handleDelete = async () => {
+    const password = prompt("Enter password to delete this file:");
+    if (password !== process.env.NEXT_PUBLIC_DELETE_PASSWORD) {
+      if (password !== null) {
+        alert("Incorrect password!");
+      }
+      return;
+    }
+    
     if (!confirm("Are you sure you want to delete this file? This cannot be undone.")) return;
     
     setIsDeleting(true);
