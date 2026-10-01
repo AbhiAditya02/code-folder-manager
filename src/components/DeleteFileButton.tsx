@@ -11,19 +11,25 @@ export function DeleteFileButton({ fileId, folderId }: { fileId: string; folderI
 
   const handleDelete = async () => {
     const password = prompt("Enter password to delete this file:");
-    if (password !== process.env.NEXT_PUBLIC_DELETE_PASSWORD) {
-      if (password !== null) {
-        alert("Incorrect password!");
-      }
-      return;
-    }
+    if (password === null) return;
     
     if (!confirm("Are you sure you want to delete this file? This cannot be undone.")) return;
     
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/files/${fileId}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
+      const res = await fetch(`/api/files/${fileId}`, { 
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+      
+      if (!res.ok) {
+        if (res.status === 401) {
+          alert("Incorrect password!");
+          return;
+        }
+        throw new Error("Failed to delete");
+      }
       
       router.push(`/folders/${folderId}`);
       router.refresh();

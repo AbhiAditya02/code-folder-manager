@@ -62,6 +62,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const body = await req.json().catch(() => ({}));
+    if (body.password !== process.env.DELETE_PASSWORD) {
+      return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
+    }
+
     const fileId = (await params).id;
     
     const existing = await db.query.codeFiles.findFirst({
