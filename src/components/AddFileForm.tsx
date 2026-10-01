@@ -51,7 +51,7 @@ export function AddFileForm({ folderId }: { folderId: string }) {
   };
 
   const languages = [
-    "javascript", "typescript", "python", "java", "c", "cpp", "csharp", "go", "rust", "php", "ruby", "sql", "html", "css"
+    "javascript", "typescript", "python", "java", "c", "cpp", "csharp", "go", "rust", "php", "ruby", "sql", "html", "css", "markdown"
   ];
 
   return (

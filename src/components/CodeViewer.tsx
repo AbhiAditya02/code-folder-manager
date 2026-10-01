@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
 import { Check, Copy, Code2, Download, MoreVertical } from "lucide-react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -43,6 +45,8 @@ interface CodeViewerProps {
 }
 
 export function CodeViewer({ content, language, filename = "code" }: CodeViewerProps) {
+  const isMarkdown = language.toLowerCase() === "markdown";
+  const [showPreview, setShowPreview] = useState(isMarkdown);
   const [copied, setCopied] = useState(false);
   const [downloadedTxt, setDownloadedTxt] = useState(false);
   const [downloadedExt, setDownloadedExt] = useState(false);
@@ -96,6 +100,16 @@ export function CodeViewer({ content, language, filename = "code" }: CodeViewerP
         <div className="flex items-center gap-2">
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center gap-2">
+            {isMarkdown && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowPreview(!showPreview)}
+                className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showPreview ? "View Code" : "Preview"}
+              </Button>
+            )}
             {ext !== "txt" && (
               <Button
                 variant="ghost"
@@ -180,20 +194,28 @@ export function CodeViewer({ content, language, filename = "code" }: CodeViewerP
         </div>
       </div>
       <div className="flex-1 min-h-0 relative">
-        <Editor
-          height="100%"
-          language={language.toLowerCase()}
-          theme="vs-dark"
-          value={content}
-          options={{
-            readOnly: true,
-            minimap: { enabled: false },
-            fontSize: 14,
-            padding: { top: 16, bottom: 16 },
-            scrollBeyondLastLine: false,
-            smoothScrolling: true,
-          }}
-        />
+        {isMarkdown && showPreview ? (
+          <div className="h-full overflow-y-auto p-4 md:p-8 bg-[#1e1e1e]">
+            <article className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-black/50 prose-pre:border prose-pre:border-border/50 max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+            </article>
+          </div>
+        ) : (
+          <Editor
+            height="100%"
+            language={language.toLowerCase()}
+            theme="vs-dark"
+            value={content}
+            options={{
+              readOnly: true,
+              minimap: { enabled: false },
+              fontSize: 14,
+              padding: { top: 16, bottom: 16 },
+              scrollBeyondLastLine: false,
+              smoothScrolling: true,
+            }}
+          />
+        )}
       </div>
     </div>
   );
