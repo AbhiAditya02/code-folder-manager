@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
-import { Check, Copy, Code2 } from "lucide-react";
+import { Check, Copy, Code2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface CodeViewerProps {
@@ -12,11 +12,31 @@ interface CodeViewerProps {
 
 export function CodeViewer({ content, language }: CodeViewerProps) {
   const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownload = () => {
+    setDownloaded(true);
+    
+    // Yield to main thread so UI updates immediately
+    setTimeout(() => {
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "code.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 10);
+
+    setTimeout(() => setDownloaded(false), 2000);
   };
 
   return (
@@ -26,19 +46,34 @@ export function CodeViewer({ content, language }: CodeViewerProps) {
           <Code2 className="h-4 w-4 text-primary" />
           <span className="text-sm font-mono text-muted-foreground">{language}</span>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleCopy}
-          className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {copied ? (
-            <Check className="h-4 w-4 text-green-500 mr-1.5" />
-          ) : (
-            <Copy className="h-4 w-4 mr-1.5" />
-          )}
-          {copied ? "Copied" : "Copy code"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDownload}
+            className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {downloaded ? (
+              <Check className="h-4 w-4 text-green-500 mr-1.5" />
+            ) : (
+              <Download className="h-4 w-4 mr-1.5" />
+            )}
+            {downloaded ? "Downloaded" : "Download TXT"}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopy}
+            className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {copied ? (
+              <Check className="h-4 w-4 text-green-500 mr-1.5" />
+            ) : (
+              <Copy className="h-4 w-4 mr-1.5" />
+            )}
+            {copied ? "Copied" : "Copy code"}
+          </Button>
+        </div>
       </div>
       <div className="flex-1 min-h-0 relative">
         <Editor
