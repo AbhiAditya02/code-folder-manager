@@ -58,7 +58,7 @@ export default async function FilePage({ params }: PageProps) {
       </div>
 
       <div className="flex-1 mt-2 flex flex-col min-h-0">
-        <CodeViewer content={file.content} language={file.language} />
+        <CodeViewer content={file.content} language={file.language} filename={file.heading} />
       </div>
     </div>
   );

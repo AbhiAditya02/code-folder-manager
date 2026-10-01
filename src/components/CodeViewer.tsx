@@ -5,14 +5,43 @@ import Editor from "@monaco-editor/react";
 import { Check, Copy, Code2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const LANGUAGE_EXTENSIONS: Record<string, string> = {
+  javascript: "js",
+  typescript: "ts",
+  python: "py",
+  java: "java",
+  c: "c",
+  cpp: "cpp",
+  csharp: "cs",
+  go: "go",
+  rust: "rs",
+  ruby: "rb",
+  php: "php",
+  swift: "swift",
+  kotlin: "kt",
+  html: "html",
+  css: "css",
+  json: "json",
+  markdown: "md",
+  sql: "sql",
+  bash: "sh",
+  shell: "sh",
+  yaml: "yml",
+  xml: "xml",
+};
+
 interface CodeViewerProps {
   content: string;
   language: string;
+  filename?: string;
 }
 
-export function CodeViewer({ content, language }: CodeViewerProps) {
+export function CodeViewer({ content, language, filename = "code" }: CodeViewerProps) {
   const [copied, setCopied] = useState(false);
-  const [downloaded, setDownloaded] = useState(false);
+  const [downloadedTxt, setDownloadedTxt] = useState(false);
+  const [downloadedExt, setDownloadedExt] = useState(false);
+
+  const ext = LANGUAGE_EXTENSIONS[language.toLowerCase()] || "txt";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
@@ -20,8 +49,9 @@ export function CodeViewer({ content, language }: CodeViewerProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDownload = () => {
-    setDownloaded(true);
+  const handleDownload = (isTxt: boolean) => {
+    if (isTxt) setDownloadedTxt(true);
+    else setDownloadedExt(true);
     
     // Yield to main thread so UI updates immediately
     setTimeout(() => {
@@ -29,14 +59,25 @@ export function CodeViewer({ content, language }: CodeViewerProps) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "code.txt";
+      
+      let baseName = filename;
+      if (baseName.includes('.')) {
+        baseName = baseName.substring(0, baseName.lastIndexOf('.'));
+      }
+      
+      const targetExt = isTxt ? "txt" : ext;
+      a.download = `${baseName}.${targetExt}`;
+      
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }, 10);
 
-    setTimeout(() => setDownloaded(false), 2000);
+    setTimeout(() => {
+      if (isTxt) setDownloadedTxt(false);
+      else setDownloadedExt(false);
+    }, 2000);
   };
 
   return (
@@ -47,18 +88,33 @@ export function CodeViewer({ content, language }: CodeViewerProps) {
           <span className="text-sm font-mono text-muted-foreground">{language}</span>
         </div>
         <div className="flex items-center gap-2">
+          {ext !== "txt" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDownload(false)}
+              className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {downloadedExt ? (
+                <Check className="h-4 w-4 text-green-500 mr-1.5" />
+              ) : (
+                <Download className="h-4 w-4 mr-1.5" />
+              )}
+              {downloadedExt ? "Downloaded" : `Download .${ext}`}
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleDownload}
+            onClick={() => handleDownload(true)}
             className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
           >
-            {downloaded ? (
+            {downloadedTxt ? (
               <Check className="h-4 w-4 text-green-500 mr-1.5" />
             ) : (
               <Download className="h-4 w-4 mr-1.5" />
             )}
-            {downloaded ? "Downloaded" : "Download TXT"}
+            {downloadedTxt ? "Downloaded" : "Download .txt"}
           </Button>
           <Button
             variant="ghost"
