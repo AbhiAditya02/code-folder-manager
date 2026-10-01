@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
-import { Check, Copy, Code2, Download } from "lucide-react";
+import { Check, Copy, Code2, Download, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const LANGUAGE_EXTENSIONS: Record<string, string> = {
   javascript: "js",
@@ -88,47 +94,89 @@ export function CodeViewer({ content, language, filename = "code" }: CodeViewerP
           <span className="text-sm font-mono text-muted-foreground">{language}</span>
         </div>
         <div className="flex items-center gap-2">
-          {ext !== "txt" && (
+          {/* Desktop Buttons */}
+          <div className="hidden md:flex items-center gap-2">
+            {ext !== "txt" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleDownload(false)}
+                className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {downloadedExt ? (
+                  <Check className="h-4 w-4 text-green-500 mr-1.5" />
+                ) : (
+                  <Download className="h-4 w-4 mr-1.5" />
+                )}
+                {downloadedExt ? "Downloaded" : `Download .${ext}`}
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleDownload(false)}
+              onClick={() => handleDownload(true)}
               className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
             >
-              {downloadedExt ? (
+              {downloadedTxt ? (
                 <Check className="h-4 w-4 text-green-500 mr-1.5" />
               ) : (
                 <Download className="h-4 w-4 mr-1.5" />
               )}
-              {downloadedExt ? "Downloaded" : `Download .${ext}`}
+              {downloadedTxt ? "Downloaded" : "Download .txt"}
             </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleDownload(true)}
-            className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {downloadedTxt ? (
-              <Check className="h-4 w-4 text-green-500 mr-1.5" />
-            ) : (
-              <Download className="h-4 w-4 mr-1.5" />
-            )}
-            {downloadedTxt ? "Downloaded" : "Download .txt"}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCopy}
-            className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {copied ? (
-              <Check className="h-4 w-4 text-green-500 mr-1.5" />
-            ) : (
-              <Copy className="h-4 w-4 mr-1.5" />
-            )}
-            {copied ? "Copied" : "Copy code"}
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCopy}
+              className="h-8 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {copied ? (
+                <Check className="h-4 w-4 text-green-500 mr-1.5" />
+              ) : (
+                <Copy className="h-4 w-4 mr-1.5" />
+              )}
+              {copied ? "Copied" : "Copy code"}
+            </Button>
+          </div>
+
+          {/* Mobile Dropdown */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger render={
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-white/10 text-muted-foreground hover:text-foreground" />
+              }>
+                <MoreVertical className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-[#1e1e1e] border-border/50 text-foreground">
+                {ext !== "txt" && (
+                  <DropdownMenuItem onClick={() => handleDownload(false)} className="hover:bg-white/10 cursor-pointer">
+                    {downloadedExt ? (
+                      <Check className="h-4 w-4 text-green-500 mr-2" />
+                    ) : (
+                      <Download className="h-4 w-4 mr-2" />
+                    )}
+                    {downloadedExt ? "Downloaded" : `Download .${ext}`}
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={() => handleDownload(true)} className="hover:bg-white/10 cursor-pointer">
+                  {downloadedTxt ? (
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                  ) : (
+                    <Download className="h-4 w-4 mr-2" />
+                  )}
+                  {downloadedTxt ? "Downloaded" : "Download .txt"}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleCopy} className="hover:bg-white/10 cursor-pointer">
+                  {copied ? (
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                  ) : (
+                    <Copy className="h-4 w-4 mr-2" />
+                  )}
+                  {copied ? "Copied" : "Copy code"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
       <div className="flex-1 min-h-0 relative">
