@@ -3,7 +3,7 @@ import { codeFiles, folders } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Trash2, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CodeViewer } from "@/components/CodeViewer";
 import { DeleteFileButton } from "@/components/DeleteFileButton";
@@ -48,8 +48,21 @@ export default async function FilePage({ params }: PageProps) {
               </span>
               <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <Calendar className="h-4 w-4" />
-                Created {new Date(file.createdAt).toLocaleString()}
+                Created {new Date(file.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
               </span>
+              {(() => {
+                const expiresAt = new Date(file.createdAt);
+                expiresAt.setDate(expiresAt.getDate() + 7);
+                const msLeft = expiresAt.getTime() - new Date().getTime();
+                const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
+                
+                return (
+                  <span className="flex items-center gap-1.5 text-sm text-orange-400">
+                    <Timer className="h-4 w-4" />
+                    Deletes in {daysLeft} day{daysLeft !== 1 ? 's' : ''}
+                  </span>
+                );
+              })()}
             </div>
           </div>
           

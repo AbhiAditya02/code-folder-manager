@@ -32,7 +32,7 @@ export function FileCard({ id, heading, language, createdAt }: FileCardProps) {
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Clock className="h-3 w-3" />
-            {new Date(createdAt).toLocaleDateString()}
+            {new Date(createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}
           </div>
         </CardContent>
       </Card>

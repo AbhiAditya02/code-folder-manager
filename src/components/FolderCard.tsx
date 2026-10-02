@@ -7,13 +7,14 @@ interface FolderCardProps {
   id: string;
   name: string;
   dept: string;
+  subject: string;
   year: number;
   batch: string;
   groupName: string;
   createdAt: Date;
 }
 
-export function FolderCard({ id, name, dept, year, batch, groupName, createdAt }: FolderCardProps) {
+export function FolderCard({ id, name, dept, subject, year, batch, groupName, createdAt }: FolderCardProps) {
   return (
     <Link href={`/folders/${id}`}>
       <Card className="group relative overflow-hidden border-border/50 bg-black/40 backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-black/60 hover:shadow-[0_0_20px_rgba(var(--primary),0.15)]">
@@ -28,7 +29,7 @@ export function FolderCard({ id, name, dept, year, batch, groupName, createdAt }
             <div className="space-y-1">
               <h3 className="font-semibold leading-none tracking-tight">{name}</h3>
               <p className="text-xs text-muted-foreground">
-                Created {new Date(createdAt).toLocaleDateString()}
+                Created {new Date(createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}
               </p>
             </div>
           </div>
@@ -37,6 +38,7 @@ export function FolderCard({ id, name, dept, year, batch, groupName, createdAt }
         <CardContent className="relative z-10 pb-4">
           <div className="flex flex-wrap gap-2">
             <Badge icon={<GraduationCap className="h-3 w-3" />} text={dept} />
+            <Badge icon={<GraduationCap className="h-3 w-3" />} text={subject} />
             <Badge icon={<Calendar className="h-3 w-3" />} text={getYearString(year)} />
             <Badge icon={<Users className="h-3 w-3" />} text={`Batch ${batch}`} />
             <Badge icon={<Folder className="h-3 w-3" />} text={`Group ${groupName}`} />

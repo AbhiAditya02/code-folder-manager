@@ -32,6 +32,7 @@ export function CreateFolderDialog() {
 
   const [formData, setFormData] = useState({
     dept: "",
+    subject: "",
     year: "1",
     batch: "",
     groupName: "",
@@ -47,6 +48,7 @@ export function CreateFolderDialog() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dept: formData.dept.toUpperCase(),
+          subject: formData.subject.toUpperCase(),
           year: parseInt(formData.year),
           batch: formData.batch.toUpperCase(),
           groupName: formData.groupName.toUpperCase(),
@@ -60,7 +62,7 @@ export function CreateFolderDialog() {
       }
 
       setOpen(false);
-      setFormData({ dept: "", year: "1", batch: "", groupName: "" });
+      setFormData({ dept: "", subject: "", year: "1", batch: "", groupName: "" });
       toast.add({ title: "Success", description: "Folder created successfully.", type: "success" });
       router.refresh(); // Refresh page to see new folder
     } catch (error: any) {
@@ -101,6 +103,19 @@ export function CreateFolderDialog() {
                 className="uppercase bg-black/50 border-border/50 focus-visible:ring-primary/50"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="subject">Subject</Label>
+              <Input
+                id="subject"
+                placeholder="e.g. DBMS"
+                required
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                className="uppercase bg-black/50 border-border/50 focus-visible:ring-primary/50"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="year">Year</Label>
               <Select 
@@ -146,7 +161,7 @@ export function CreateFolderDialog() {
           
           <div className="rounded-lg bg-primary/10 p-3 mt-4 border border-primary/20">
             <p className="text-sm text-center font-mono text-primary">
-              Folder name: {formData.dept || 'DEPT'}_{getYearString(formData.year)}_{formData.batch || 'BATCH'}_{formData.groupName || 'GROUP'}
+              Folder name: {formData.dept || 'DEPT'}_{formData.subject || 'SUBJECT'}_{getYearString(formData.year)}_{formData.batch || 'BATCH'}_{formData.groupName || 'GROUP'}
             </p>
           </div>
 

@@ -9,12 +9,14 @@ export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const dept = searchParams.get('dept');
+    const subject = searchParams.get('subject');
     const year = searchParams.get('year');
     const batch = searchParams.get('batch');
     const groupName = searchParams.get('groupName');
 
     let conditions = [];
     if (dept) conditions.push(eq(folders.dept, dept));
+    if (subject) conditions.push(eq(folders.subject, subject));
     if (year) conditions.push(eq(folders.year, parseInt(year)));
     if (batch) conditions.push(eq(folders.batch, batch));
     if (groupName) conditions.push(eq(folders.group_name, groupName));
@@ -40,8 +42,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
     }
 
-    const { dept, year, batch, groupName } = parsed.data;
-    const folderName = `${dept}_${getYearString(year)}_${batch}_${groupName}`;
+    const { dept, subject, year, batch, groupName } = parsed.data;
+    const folderName = `${dept}_${subject}_${getYearString(year)}_${batch}_${groupName}`;
 
     // Check if it already exists
     const existing = await db.query.folders.findFirst({
@@ -55,6 +57,7 @@ export async function POST(req: NextRequest) {
     const [newFolder] = await db.insert(folders).values({
       name: folderName,
       dept,
+      subject,
       year,
       batch,
       group_name: groupName,

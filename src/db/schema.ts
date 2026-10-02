@@ -5,6 +5,7 @@ export const folders = pgTable('folders', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull().unique(),
   dept: text('dept').notNull(),
+  subject: text('subject').notNull(),
   year: integer('year').notNull(),
   batch: text('batch').notNull(),
   group_name: text('group_name').notNull(),

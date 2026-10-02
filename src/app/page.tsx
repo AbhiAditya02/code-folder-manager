@@ -16,6 +16,7 @@ export default async function Dashboard({
   if (query) {
     conditions = or(
       ilike(folders.dept, `%${query}%`),
+      ilike(folders.subject, `%${query}%`),
       ilike(folders.batch, `%${query}%`),
       ilike(folders.group_name, `%${query}%`),
       // Since year is int, we'll only search text fields for simplicity, 
@@ -73,6 +74,7 @@ export default async function Dashboard({
               id={folder.id}
               name={folder.name}
               dept={folder.dept}
+              subject={folder.subject}
               year={folder.year}
               batch={folder.batch}
               groupName={folder.group_name}

@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
-// Format: dept_year_batch_group (e.g. CSE_2024_B1_G3)
-export const folderNameRegex = /^[A-Za-z]+_\d{4}_[A-Za-z0-9]+_[A-Za-z0-9]+$/;
+// Format: dept_subject_year_batch_group (e.g. CSE_DBMS_2024_B1_G3)
+export const folderNameRegex = /^[A-Za-z]+_[A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+$/;
 
 export const createFolderSchema = z.object({
   dept: z.string().min(1, 'Department is required').regex(/^[A-Za-z]+$/, 'Department must contain only letters'),
+  subject: z.string().min(1, 'Subject is required').regex(/^[A-Za-z0-9]+$/, 'Subject must contain only alphanumeric characters'),
   year: z.number().int().min(1).max(4),
   batch: z.string().min(1, 'Batch is required').regex(/^[A-Za-z0-9]+$/, 'Batch must contain only alphanumeric characters'),
   groupName: z.string().min(1, 'Group is required').regex(/^[A-Za-z0-9]+$/, 'Group must contain only alphanumeric characters'),
